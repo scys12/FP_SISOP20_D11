@@ -39,7 +39,7 @@ struct dinode {
   uint hour;
   uint day;
   uint month;
-  uint year;
+  int year;
 };
 
 // Inodes per block.

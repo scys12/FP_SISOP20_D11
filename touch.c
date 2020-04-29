@@ -6,7 +6,7 @@
 #include "fs.h"
 int main (int argc, char *argv[]){
     int file_input;
-    char buf[8192];
+    
     //struct stat st;
     if(argc<2){
        printf(1,"touch : Missing one argument...\n"); 
@@ -19,6 +19,9 @@ int main (int argc, char *argv[]){
                 printf(1,"touch : Error creating file %s\n",argv[i]);
         }
         else{
+            struct stat st;
+            fstat(file_input,&st);
+            char buf[st.size];
             read(file_input, buf,sizeof(buf));
             close(file_input);
             unlink(argv[i]);

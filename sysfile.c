@@ -279,7 +279,7 @@ create(char *path, short type, short major, short minor)
 
   ip->second = now.second;
   ip->minute = now.minute;
-  ip->hour = now.hour;
+  ip->hour = now.hour+7;
   ip->day = now.day;
   ip->month = now.month;
   ip->year = now.year;

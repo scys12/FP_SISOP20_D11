@@ -238,10 +238,10 @@ ialloc(ushort type)
   date = gmtime(&totalTime);
   din.second = date->tm_sec;
   din.minute = date->tm_min;
-  din.hour = date->tm_hour;
+  din.hour = date->tm_hour+7;
   din.day = date->tm_mday;
-  din.month = date->tm_mon;
-  din.year = date->tm_year;
+  din.month = date->tm_mon+1;
+  din.year = date->tm_year+1900;
 
   winode(inum, &din);
   return inum;
