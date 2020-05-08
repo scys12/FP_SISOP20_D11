@@ -35,7 +35,6 @@ void baris(char* path, long long int toprint,int jumlah){
         printf(1, "%c", line[0]);
     }
     close(x);
-    printf(1,"\n");
 }
 
 int main(int argc, char* argv[])
