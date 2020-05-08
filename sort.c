@@ -240,28 +240,7 @@ void sortColumn(char **v, int dim,int col){
 					n=0;
                 }                
             }
-			column =1;
-			n=0;
-			for (int j = 0; j < strlen(v[i]); j++)
-            {
-				if (column>col)
-				{
-					break;
-				}
-				
-				if (column == col)
-				{
-					textOnColumnTwo[n] = v[i][j];
-					n++;
-				}
-                if (v[i][j]==' ')
-                {
-                    column++;
-					
-					n=0;
-                }                
-            }
-			if((strcmp(textOnColumn,textOnColumnTwo)>0)){
+            if((strcmp(v[i],v[i+1])>0)){
 				char tmp[255];
 				strcpy(tmp,v[i]); 
 				v[i]=malloc(sizeof(char)*(strlen(v[i+1])));
@@ -270,17 +249,9 @@ void sortColumn(char **v, int dim,int col){
 				v[i+1]=malloc(sizeof(char)*strlen(tmp));
 				strcpy(v[i+1],tmp);
 				ordinato=false;
-        	}
-			for (int i = 0; i < 255; i++)
-				{
-					textOnColumn[i]='\0';
-				}
-				for (int i = 0; i < 255; i++)
-				{
-					textOnColumnTwo[i]='\0';
-				}
-			}
-		dim--;
+            }
+            
+        }
     }
 }
 int main(int argc, char *argv[]){
