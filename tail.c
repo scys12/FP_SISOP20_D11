@@ -3,66 +3,55 @@
 #include "user.h"
 #include "fcntl.h"
 #include "fs.h"
-void tailline(char* path, long long int linestoprint,int total)
-{
-    int fd;
+
+void baris(char* path, long long int toprint,int jumlah){
+    int x, f1;
     char line[1];
-    int status;
-    long long int totline=0;
-    fd = open(path, 0);
-    while((status = read(fd, line, sizeof(line))) > 0)
-    {
+    long long int lines=0;
+    x = open(path, 0);
+    while((f1 = read(x, line, sizeof(line))) > 0){
         if(line[0] == '\n')
-            totline++;
+            lines++;
     }
-    if(status<0)
-    {
+    if(f1 < 0){
         printf(1, "tail : error reading %s\n", path);
         return;
     }
-    long long int skip = totline - linestoprint;
-    if(skip<0) skip = 0;
-    if(total > 1)
-    {
+    long long int skip = lines - toprint;
+    if(skip < 0)
+		skip = 0;
+    if(jumlah > 1){
         printf(1, "==> %s <==\n", path);
     }
-    close(fd);
-    fd = open(path, 0);
-    while(skip>0)
-    {
-        status = read(fd, line, sizeof(line));
-        if(line[0] == '\n')
-        {
+    close(x);
+    x = open(path, 0);
+    while(skip > 0){
+        f1 = read(x, line, sizeof(line));
+        if(line[0] == '\n'){
             skip--;
         }
-
     }
-    while((status = read(fd, line, sizeof(line))) > 0)
-    {
+    while((f1 = read(x, line, sizeof(line))) > 0){
         printf(1, "%c", line[0]);
     }
-    close(fd);
+    close(x);
     printf(1,"\n");
 }
 
-
 int main(int argc, char* argv[])
 {
-    int fd = -1;
-    if(argc <=1)
+    int x = -1;
+    if(argc <= 1)
         printf(1, "Usage: tail <mode> <filename>");
-    else if(argc > 1)
-    {
+    else if(argc > 1){
         int i;
-        for(i=1;i<argc;i++)
-        {
-            fd = open(argv[i], 0);
-            if(fd < 0)
+        for(i = 1; i < argc; i++){
+            x = open(argv[i], 0);
+            if(x < 0)
                 printf(1, "tail : error opening %s\n", argv[i]);
-            else
-            {
-                close(fd);
-                tailline(argv[i], 10, argc-1);
+            else{
+                close(x);
+                baris(argv[i], 10, argc-1);
             }
         }
     }
