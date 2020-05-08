@@ -20,13 +20,14 @@ int main(int argc, char *argv[]){
 	}
 	char buff[1000], hasil[1000];
 	int y, z;
-	int count = 0; count1=0;
+	int count = 0; 
+	int count1 = 0;
 	int i;
-	y = read(x, buff, sizeof(buf));
+	y = read(x, buff, sizeof(buff));
 	z = panjang(buff);
 	if(y > 0){
 		while(z > 0){
-			if(buff[counterb] != '\t'){
+			if(buff[count1] != '\t'){
 				hasil[count] = buff[count1];
 				count++;
 				count1++;
