@@ -3,47 +3,45 @@
 #include "user.h"
 #include "fcntl.h"
 
-int length(char *input){
-    int length = 0;
-    while(input[length]!='\0')  
-    {
-        length++;
+int panjang(char* teks){
+    int panjang;
+    panjang = 0;
+    while(teks[panjang]!='\0'){
+        panjang++;
     }
-    return length;
+    return panjang;
 }
 
 int main(int argc, char *argv[]){
-	int f1;
-	char hasil[1000], buf[1000];
-	
-	if((f1 = open(argv[1], O_RDONLY)) < 0){
+	int x;
+	if((x = open(argv[1], O_RDONLY)) < 0){
 		printf(1, "failed to read %s\n", argv[1]);
 		exit();
 	}
-	int n, p, i,counter, counterb;
-	counter = 0; counterb=0;
-	n = read(f1, buf, sizeof(buf));
-	p = length(buf);
-	if(n > 0){
-		while(p > 0){
-			if(buf[counterb] != '\t'){
-				hasil[counter] = buf[counterb];
-				counter++; counterb++;
+	char buff[1000], hasil[1000];
+	int y, z;
+	int count = 0; count1=0;
+	int i;
+	y = read(x, buff, sizeof(buf));
+	z = panjang(buff);
+	if(y > 0){
+		while(z > 0){
+			if(buff[counterb] != '\t'){
+				hasil[count] = buff[count1];
+				count++;
+				count1++;
 			}
-			else if(buf[counterb] == '\t'){
-				for(i=1; i<=3;i++){
-					hasil[counter] = ' ';
-					counter++;
+			else if(buff[count1] == '\t'){
+				for(i = 1; i <= 3; i++){
+					hasil[count] = ' ';
+					count++;
 				}
-				counterb++;
+				count1++;
 			}
-			p--;
-			//printf(1, "%d\n", p);
-			//printf(1, "%s\n", hasil);
+			z--;
 		}
 	}
-	
-	close(f1);
+	close(x);
 	printf(1, "%s", hasil);
 	exit();
 }
