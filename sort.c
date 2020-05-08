@@ -4,36 +4,15 @@
 #include "fcntl.h"
 #define MAX_BUF 512
 
-
-
-
 enum bool {false,true};
 
-/* Function: print_version
- * --------------
- * Function to print the helper of the command
- */
-void print_help(){
-	printf(1, "Usage: sort [OPTION]... [FILE]...\nSort the lines of the FILE passed as parameter or from standard input in lexicografical order\nMore than one FILE can be specified as input, and as options\nPossible arguments are:\n\t-c\t\tprint the first line out of order;\n\t-n\t\tprint in numerical order the strings;\n\t-u\t\tprint only the unique elements;\n\t-o\t\twrite to the specified file;\n\t-f\t\tcase insensitive;\n\t-r\t\treverse;\n");
-	exit();
+int convertToNumber(char num[]){
+	int n = 0;
+  	while('0' <= *num && *num <= '9')
+    	n = n*10 + *num++ - '0';
+	return n;
 }
 
-/* Function: print_version
- * --------------
- * Function to print the current version of the command
- */
-void print_version(){
-	printf(1, "sort for xv6 1.0\nWritten by Eleonora Macchioni\n");
-	exit();
-}
-/* Function: bubbleSort
- * --------------
- * Function to sort the passed lines using bubblesort algorithm.
- * Accepts numeric or not numeric values.
- * **v: the text to be organized
- * dim: how many lines in the text
- * numeric: specify if the strings should be converted to numeric values (int)
- */
 void bubbleSort(char **v,int dim,enum bool numeric){
 	int i=0;
     
@@ -75,9 +54,7 @@ void bubbleSort(char **v,int dim,enum bool numeric){
                         strcpy(v[i+1],tmp);
                         ordinato=false;
                     }
-                }
-                
-                
+                }      
             }
             
         }
@@ -86,14 +63,6 @@ void bubbleSort(char **v,int dim,enum bool numeric){
 
 
 }
-
-/* Function: unique
- * --------------
- * Removes the duplicate from the file and returns the new dimension (in line) of the text
- * **v: the text
- * dim: the input dimension of the text
- * return dim: the returned dimension of the text
- */
 int unique(char **v,int dim){
 	for(int i=0;i<dim;i++){
 		for(int j=i+1;j<dim;){
@@ -110,15 +79,8 @@ int unique(char **v,int dim){
 		}
 	}
 	return dim++;
-
-
 }
 
-/* Function: toLower
- * --------------
- * converts the string passed to lowercase
- * s: the string to convert
- */
 void toLower(char *s){
 	int i;
 	for(i=0;i<strlen(s);i++)
@@ -126,15 +88,8 @@ void toLower(char *s){
 			s[i]+=32;
 }
 
-/* Function: reverse
- * --------------
- * Reverse the lines of the text
- * **v: the text
- * dim: the input dimension of the text
- */
 void reverse(char **v,int dim){
 
-	/* Function to reverse arr[] from start to end*/
 	int start=0;
 	dim--;
 	int end=dim; 
@@ -257,22 +212,56 @@ void sortMonth(char **v,int dim){
     }
 }
 
-void sortColumn(char **v, int dim,int){
+void sortColumn(char **v, int dim,int col){
     int i=0,n=0;
-    char afterSpace[255];
+    char textOnColumn[255],textOnColumnTwo[255];
 	enum bool ordinato=false;
 	while(dim>1 && !ordinato){
 		ordinato=true;
 		for(i=0;i<dim-1;i++){
+			int column =1;
+			n=0;
 			for (int j = 0; j < strlen(v[i]); j++)
             {
+				if (column>col)
+				{
+					break;
+				}
+				
+				if (column == col)
+				{
+					textOnColumn[n] = v[i][j];
+					n++;
+				}
                 if (v[i][j]==' ')
                 {
-                    
-                }
-                
+                    column++;
+					
+					n=0;
+                }                
             }
-            if((strcmp(v[i],v[i+1])>0)){
+			column =1;
+			n=0;
+			for (int j = 0; j < strlen(v[i]); j++)
+            {
+				if (column>col)
+				{
+					break;
+				}
+				
+				if (column == col)
+				{
+					textOnColumnTwo[n] = v[i][j];
+					n++;
+				}
+                if (v[i][j]==' ')
+                {
+                    column++;
+					
+					n=0;
+                }                
+            }
+			if((strcmp(textOnColumn,textOnColumnTwo)>0)){
 				char tmp[255];
 				strcpy(tmp,v[i]); 
 				v[i]=malloc(sizeof(char)*(strlen(v[i+1])));
@@ -281,80 +270,60 @@ void sortColumn(char **v, int dim,int){
 				v[i+1]=malloc(sizeof(char)*strlen(tmp));
 				strcpy(v[i+1],tmp);
 				ordinato=false;
-            }
-            
-        }
+        	}
+			for (int i = 0; i < 255; i++)
+				{
+					textOnColumn[i]='\0';
+				}
+				for (int i = 0; i < 255; i++)
+				{
+					textOnColumnTwo[i]='\0';
+				}
+			}
+		dim--;
     }
 }
-/* Function: main
- * --------------
- * Main function for "sort" command usage, see print_help for details.
- */
-
 int main(int argc, char *argv[]){
-
-
-
-
 	int input=0;
 	int first_file=0;
 	int fd=0;
 	int dim=0;
+	int col=0;
 
 	enum bool numeric=true;
-	enum bool c=false, u=false,f=false, o=false,r=false,n=false, m=false;
+	enum bool c=false, u=false,f=false, o=false,r=false,n=false, m=false, k=false;
 	
 	char dest[MAX_BUF];
 	char tmp[255];
 	char *text[255];
-
-
+	// char numChar[100];
 
 	//input no option first
 	if(argc<=1){
-
-
 		while((read(0, tmp, sizeof(tmp)) > 0)){
 			text[dim]=malloc(sizeof(char)*strlen(tmp));
 			strcpy(text[dim],tmp);
 			dim++;
 		}
-
 		numeric=false;
-
 		bubbleSort(text,dim,numeric);
-
 		for(int i=0;i<dim;i++){
-
-			printf(1,"%s",text[i],strlen(text[i]));}
-		free(text);
-
+			printf(1,"%s",text[i]);
+		}
+			free(text);
 		exit();
-
 	}
-
-
-
-
-
-
 	//other cases
-
-
 	for(int i=1;i<argc;i++){
 		fd=0;
-
 		if(argv[i][0]=='-'){
 			//we have options 
 
 			if(argv[i][1]=='c'){
 				c=true;
-
-
 			}
 			else if(argv[i][1]=='u'){
 				u=true;
-
 			}
 			else if(argv[i][1]=='f'){
 				f=true;
@@ -364,34 +333,43 @@ int main(int argc, char *argv[]){
 			}
 			else if(argv[i][1]=='r'){
 				r=true;
-
 			}
 			else if(argv[i][1]=='n'){
 				n=true;
-
 			}
             else if (argv[i][1]=='M')
             {
                 m=true;
             }
             else if(argv[i][1]=='k'){
-                if (atoi(argv[i][2])>0)
+                if (argv[i][2] >= '1' && argv[i][2] <= '9' )
                 {
-                    sortColumn(text,dim);
+						if (strlen(argv[i])>3)
+						{
+							char numChar[100];
+							int pos=0;
+							for (int it = 3; it <= strlen(argv[i]); it++)
+							{
+								numChar[pos] = argv[i][it];
+								pos++;
+							}
+							col = convertToNumber(numChar);
+							k=true;
+								printf(1,"%d\n",col);
+						}else if (strlen(argv[i])==3)
+						{
+							char numChar[100];
+							numChar[0] = argv[i][2];
+							col = convertToNumber(numChar);
+							k=true;
+							printf(1,"%d\n",col);
+						}
+								
                 }
-                
             }
             
-			else if(strcmp(argv[i],"--help") == 0){
-				print_help();
-
-			}
-			else if(strcmp(argv[i],"--version") == 0){
-				print_version();
-
-			}
 			else{
-				printf(2, "sort: invalid option %s\nTry 'head --help' for more information\n", argv[i]);
+				printf(2, "sort: invalid option %s\n\n", argv[i]);
 				exit();
 			}
 
@@ -415,29 +393,47 @@ int main(int argc, char *argv[]){
 
 				fd=open(argv[i],0);
 				if(fd<0){
-					printf(2,"sort: No such file or directory");close(fd);exit();
+					printf(2,"sort: No such file or directory\n");close(fd);exit();
 				}
 
-				int readed = read(fd, tmp, sizeof(tmp));
-				close(fd);
+				int readed;
+				// = read(fd, tmp, sizeof(tmp))
+				// close(fd);
 				int n1=0;
-				char row[255];
-
-				for(int i=0;i<readed;i++){
-
-					if(tmp[i]!='\n'){
-						row[n1]=tmp[i];
-						n1++;
+				char row[1000];
+	
+				while ((readed = read(fd, tmp, sizeof(tmp))) > 0)
+				{
+					for (int i = 0; i < readed; i++)
+					{
+						if (tmp[i]!='\n')
+						{
+							row[n1] = tmp[i];
+							n1++;
+						}else
+						{
+							row[n1]=0;
+							text[dim] = malloc(sizeof(char)*n1);
+							strcpy(text[dim],row);
+							dim++;
+							n1=0;
+						}
 					}
-					else{   
-						row[n1]=0;
-						text[dim]=malloc(sizeof(char)*n1);
-						strcpy(text[dim],row);
-						dim++;
-						n1=0;
-
+					if (argv[i][2] >= '0'){
+						printf(1,"cat: field number is zero: invalid field specification '0'\n");
+						close(fd);
+						exit();
 					}
 				}
+				
+				if (readed < 0)
+				{
+					printf(1, "cat: read error\n");
+					close(fd);
+					exit();
+				}
+				
+				close(fd);
 			}
 		}
 	}
@@ -453,8 +449,6 @@ int main(int argc, char *argv[]){
 	}
 	close(fd);
 
-
-
 	if(c==true){
 
 		for(int i=0;i<dim-1;i++){
@@ -466,6 +460,12 @@ int main(int argc, char *argv[]){
 		}
 		exit();
 	}
+
+	if (k==true)
+	{
+		sortColumn(text,dim,col);
+	}
+	
     
     if (m==true)
     {
@@ -476,31 +476,22 @@ int main(int argc, char *argv[]){
         }
         exit();
     }
-
 	if(f==true){
-
 		for(int i=0;i<dim-1;i++)
 			toLower(text[i]);
 	}
 	if(u==true){
 		dim=unique(text,dim);
-        // exit();
 	}
-
 	if(n==true){
 		numeric=true;
 		bubbleSort(text,dim,numeric);
 	}
 	else{
-
 		numeric=false;
 		bubbleSort(text,dim,numeric);
-
-
 	}
-
 	if(r==true){
-
 		reverse(text,dim);
 	}
 
@@ -519,14 +510,10 @@ int main(int argc, char *argv[]){
 	}
 	else {
 		for(int i=0;i<dim;i++){
-
 			printf(1,"%s",text[i]);
 		}
 	}
-
-
 	close(fd);
 	free(text);
 	exit();
-
 }
